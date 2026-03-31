@@ -124,37 +124,38 @@ useEffect(() => {
 }
 }
 
-  function handleSignupSubmit(e, formData) {
+ async function handleSignupSubmit(e, formData) {
   e.preventDefault();
 
-  const newErrors = [];
+  try {
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
 
-  const {
-    email,
-    password,
-    confirmPassword,
-    role,
-    workMode,
-    businessName,
-  } = formData;
+    const res = await fetch("http://localhost:5001/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    });
 
-  if (!email) newErrors.push("Email is required");
+    const data = await res.json();
 
-  if (!password) newErrors.push("Password is required");
+    if (res.ok) {
+      alert("Signup successful ✅");
+      setView("login"); // optional redirect
+    } else {
+      alert(data.message || data.error);
+    }
 
-  if (password !== confirmPassword)
-    newErrors.push("Passwords do not match");
-
-  if (
-    ["Professional", "Contractor", "Supplier", "Service"].includes(role) &&
-    workMode === "Organisation" &&
-    !businessName
-  ) {
-    newErrors.push("Name of the Business/Organisation is required");
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong");
   }
-
-  setErrors(newErrors);
 }
+
 
   const morphVariants = {
   hidden: {

@@ -76,6 +76,7 @@ export default function SignupView(props) {
   password,
   confirmPassword,
   role,
+  clientType,
   workMode,
   businessName,
   websiteLink,
